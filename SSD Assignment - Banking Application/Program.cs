@@ -46,6 +46,7 @@ namespace Banking_Application
             RunMainMenu(dal, auth);
         }
 
+        //Runs the main menu of the banking application.
         static void RunMainMenu(DataAccessLayer dal, AuthenticateService auth)
         {
             bool running = true;
@@ -83,6 +84,7 @@ namespace Banking_Application
             }
         }
 
+        //Creates a new bank account.
         static void CreateAccount(DataAccessLayer dal)
         {
             Console.WriteLine("\n=== CREATE ACCOUNT ===");
@@ -147,6 +149,8 @@ namespace Banking_Application
             Console.WriteLine($"\nAccount created successfully: {accountNo}");
         }
 
+        //Closes a bank account by its account number.
+        //Administrator approval is required.
         static void CloseAccount(DataAccessLayer dal)
         {
             Console.Write("\nAccount Number: ");
@@ -172,6 +176,7 @@ namespace Banking_Application
             }
         }
 
+        //Finds a bank account by its account number and displays its details if found.
         static void ViewAccount(DataAccessLayer dal)
         {
             Console.Write("\nAccount Number: ");
@@ -183,6 +188,8 @@ namespace Banking_Application
                 Console.WriteLine(acct.ToString());
         }
 
+
+        //Lodges a given amount of money into a bank account.
         static void LodgeMoney(DataAccessLayer dal)
         {
             Console.Write("\nAccount Number: ");
@@ -201,7 +208,8 @@ namespace Banking_Application
                 Console.WriteLine("Invalid amount.");
                 return;
             }
-
+            
+            //Reason required for lodgements over €10,000.
             string reason = null;
             if (amt > 10000)
             {
@@ -220,6 +228,7 @@ namespace Banking_Application
                 Console.WriteLine("Lodgement failed.");
         }
 
+        //Withdraws a given amount of money from a bank account.
         static void WithdrawMoney(DataAccessLayer dal)
         {
             Console.Write("\nAccount Number: ");
@@ -247,6 +256,7 @@ namespace Banking_Application
                 return;
             }
 
+            //Reason required for withdrawls over €10,000.
             string reason = null;
             if (amt > 10000)
             {
@@ -265,6 +275,7 @@ namespace Banking_Application
                 Console.WriteLine("Withdrawal failed.");
         }
 
+        //Reads a password from the console, replacing each character with an asterisk as it is entered.
         static string ReadPassword()
         {
             var pwd = new System.Text.StringBuilder();

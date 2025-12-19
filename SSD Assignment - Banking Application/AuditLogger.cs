@@ -24,6 +24,7 @@ namespace SSD_Assignment___Banking_Application
             catch { }
         }
 
+        //Logs a transaction to the Windows Event Log.
         public static void LogTransaction(string teller, string accountNo, string accountHolder,
             string transactionType, double? amount = null, string reason = null)
         {
@@ -56,6 +57,7 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+        //Logs an authentication attempt to the Windows Event Log.
         public static void LogAuth(string user, bool success, string reason = null)
         {
             try
@@ -69,6 +71,7 @@ namespace SSD_Assignment___Banking_Application
             catch { }
         }
 
+        //Logs an admin action to the Windows Event Log.
         public static void LogAdminAction(string admin, string action, bool approved)
         {
             try
@@ -82,6 +85,7 @@ namespace SSD_Assignment___Banking_Application
             catch { }
         }
 
+        //Logs an application error to the Windows Event Log.
         public static void LogError(string user, string error)
         {
             try
@@ -94,6 +98,7 @@ namespace SSD_Assignment___Banking_Application
             catch { }
         }
 
+        //Retrieves a string containing information about the current device and user.
         private static string GetDeviceInfo()
         {
             try
@@ -109,6 +114,7 @@ namespace SSD_Assignment___Banking_Application
             catch { return "Unknown"; }
         }
 
+        //Retrieves a string containing information about the current application, including its version and a hash of the executable file.
         private static string GetAppMetadata()
         {
             try

@@ -19,11 +19,13 @@ namespace Banking_Application
             InterestRate = rate;
         }
 
+
+        //Withdraws a given amount of money from the savings account.
         public override bool Withdraw(double amt)
         {
-            if (amt < 0 || Balance < amt) return false;
+            if (amt < 0 || Balance < amt) return false; 
             Balance -= amt;
-            return true;
+            return true; //Savings account cannot go into overdraft.
         }
 
         public override double GetAvailableFunds() => Balance;

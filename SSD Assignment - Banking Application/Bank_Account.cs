@@ -29,6 +29,7 @@ namespace Banking_Application
             Balance = balance;
         }
 
+        //Lodges a given amount of money into the account.
         public void Lodge(double amount)
         {
             if (amount < 0) throw new ArgumentException("Negative amount not allowed");
@@ -38,6 +39,7 @@ namespace Banking_Application
         public abstract bool Withdraw(double amount);
         public abstract double GetAvailableFunds();
 
+        //Returns a string for the account.
         public override string ToString()
         {
             return $"\nAccount: {AccountNo}\nName: {Name}\nAddress: {AddressLine1}\n" +

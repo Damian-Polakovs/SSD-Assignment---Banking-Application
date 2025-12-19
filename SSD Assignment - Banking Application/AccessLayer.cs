@@ -18,6 +18,7 @@ namespace SSD_Assignment___Banking_Application
 
         public static DataAccessLayer Instance => _instance.Value;
 
+        //Returns a new SQLite connection to the banking database.
         private SqliteConnection GetConnection()
         {
             return new SqliteConnection(new SqliteConnectionStringBuilder
@@ -27,6 +28,7 @@ namespace SSD_Assignment___Banking_Application
             }.ToString());
         }
 
+        //Initialises the database by creating the Bank_Accounts table if it does not already exist.
         private void InitDb()
         {
             using (var conn = GetConnection())
@@ -51,6 +53,8 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+        //Loads all accounts from the database into memory.
+        //If the database does not exist, it is created first.
         public void LoadAccounts()
         {
             if (!File.Exists(DbName))
@@ -71,7 +75,7 @@ namespace SSD_Assignment___Banking_Application
                         {
                             int type = reader.GetInt32(7);
 
-                            if (type == 1) // Current
+                            if (type == 1) //Current
                             {
                                 _accounts.Add(new Current_Account
                                 {
@@ -85,7 +89,7 @@ namespace SSD_Assignment___Banking_Application
                                     OverdraftAmount = reader.GetDouble(8)
                                 });
                             }
-                            else // Savings
+                            else //Savings
                             {
                                 _accounts.Add(new Savings_Account
                                 {
@@ -105,6 +109,7 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+        //Adds an account to the database and to the list of accounts in memory.
         public string AddAccount(Bank_Account acct)
         {
             _accounts.Add(acct);
@@ -148,6 +153,8 @@ namespace SSD_Assignment___Banking_Application
             return acct.AccountNo;
         }
 
+        //Finds a bank account by its account number and returns it if found.
+        //If the account is found, a balance query transaction is logged.
         public Bank_Account FindAccount(string accountNo)
         {
             if (!SqlInputValidator.IsValidGuid(accountNo)) return null;
@@ -164,6 +171,11 @@ namespace SSD_Assignment___Banking_Application
             return acct;
         }
 
+        //Closes a bank account by its account number.
+        //Requests admin approval before deleting the account.
+        //If the account is found and admin approval is granted,
+        //the account is deleted from the database and the list of accounts in memory.
+        //A transaction log is written for the account closure.
         public bool CloseAccount(string accountNo)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
@@ -193,6 +205,8 @@ namespace SSD_Assignment___Banking_Application
             return true;
         }
 
+
+        //Lodges a given amount of money into a bank account.
         public bool Lodge(string accountNo, double amount, string reason = null)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
@@ -220,6 +234,7 @@ namespace SSD_Assignment___Banking_Application
             return true;
         }
 
+        //Withdraws a given amount of money from a bank account.
         public bool Withdraw(string accountNo, double amount, string reason = null)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,

@@ -24,6 +24,7 @@ namespace SSD_Assignment___Banking_Application
 
         private AuthenticateService() { }
 
+        //Authenticates the user with the given username and password.
         public bool Authenticate(string username, string password)
         {
             try
@@ -74,6 +75,9 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+        //Requests admin approval for the given operation.
+        //If the current user is an administrator, the operation is automatically approved.
+        //Otherwise, the user is prompted to enter admin credentials.
         public bool RequestAdminApproval(string operation)
         {
             if (IsAdmin)
@@ -121,6 +125,7 @@ namespace SSD_Assignment___Banking_Application
             return false;
         }
 
+        //Reads a password from the console, replacing each character with an asterisk as it is entered.
         private string ReadPassword()
         {
             var pwd = new StringBuilder();

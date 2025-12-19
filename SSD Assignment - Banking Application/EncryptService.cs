@@ -17,6 +17,8 @@ namespace SSD_Assignment___Banking_Application
 
         public static EncryptService Instance => _instance.Value;
 
+        //If the secure key file exists, it is read and unprotected.
+        //Otherwise, a new 256-bit AES key is generated and protected before being written to the secure key file.
         private EncryptService()
         {
             if (File.Exists(KeyStorePath))
@@ -37,6 +39,8 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+
+        //Encrypts the given plaintext using the 256-bit AES key stored securely.
         public string Encrypt(string plaintext)
         {
             if (string.IsNullOrEmpty(plaintext)) return plaintext;
@@ -63,6 +67,7 @@ namespace SSD_Assignment___Banking_Application
             }
         }
 
+        //Decrypts the given ciphertext using the 256-bit AES key stored securely.
         public string Decrypt(string ciphertext)
         {
             if (string.IsNullOrEmpty(ciphertext)) return ciphertext;

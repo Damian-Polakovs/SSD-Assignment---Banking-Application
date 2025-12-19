@@ -19,6 +19,7 @@ namespace Banking_Application
             OverdraftAmount = od;
         }
 
+        //Withdraws a given amount of money from the account.
         public override bool Withdraw(double amt)
         {
             if (amt < 0 || GetAvailableFunds() < amt) return false;

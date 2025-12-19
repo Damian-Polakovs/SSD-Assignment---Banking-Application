@@ -21,6 +21,7 @@ namespace Banking_Application
 
         private DataAccessLayer() { }
 
+        //Returns a new SQLite connection to the banking database.
         private SqliteConnection GetConnection()
         {
             return new SqliteConnection(new SqliteConnectionStringBuilder
@@ -30,6 +31,7 @@ namespace Banking_Application
             }.ToString());
         }
 
+        //Initialises the database by creating the Bank_Accounts table if it does not already exist.
         private void InitDb()
         {
             using (var conn = GetConnection())
@@ -54,6 +56,8 @@ namespace Banking_Application
             }
         }
 
+        //Loads all accounts from the database into memory.
+        //If the database does not exist, it is created first.
         public void LoadAccounts()
         {
             if (!File.Exists(DbName))
@@ -109,6 +113,7 @@ namespace Banking_Application
             }
         }
 
+        //Adds a new bank account to the system.
         public string AddAccount(Bank_Account acct)
         {
             _accounts.Add(acct);
@@ -155,6 +160,7 @@ namespace Banking_Application
             return acct.AccountNo;
         }
 
+        //Finds a bank account by its account number.
         public Bank_Account FindAccount(string accountNo)
         {
             // Validate GUID format - prevents injection
@@ -172,6 +178,8 @@ namespace Banking_Application
             return acct;
         }
 
+        //Closes a bank account by its account number.
+        //Administrator approval is required.
         public bool CloseAccount(string accountNo)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
@@ -203,6 +211,7 @@ namespace Banking_Application
             return true;
         }
 
+        //Lodges a given amount of money into a bank account.
         public bool Lodge(string accountNo, double amount, string reason = null)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
@@ -231,6 +240,7 @@ namespace Banking_Application
             return true;
         }
 
+        //Withdraws a given amount of money from a bank account.
         public bool Withdraw(string accountNo, double amount, string reason = null)
         {
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
