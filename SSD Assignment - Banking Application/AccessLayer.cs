@@ -1,13 +1,12 @@
-﻿using Microsoft.Data.Sqlite;
-using SSD_Assignment___Banking_Application;
+﻿using Banking_Application;
+using Microsoft.Data.Sqlite;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Banking_Application
+namespace SSD_Assignment___Banking_Application
 {
     public sealed class DataAccessLayer
     {
@@ -18,8 +17,6 @@ namespace Banking_Application
         private readonly EncryptService _crypto = EncryptService.Instance;
 
         public static DataAccessLayer Instance => _instance.Value;
-
-        private DataAccessLayer() { }
 
         private SqliteConnection GetConnection()
         {
@@ -74,7 +71,6 @@ namespace Banking_Application
                         {
                             int type = reader.GetInt32(7);
 
-                            // Decrypt PII data when loading
                             if (type == 1) // Current
                             {
                                 _accounts.Add(new Current_Account
@@ -118,14 +114,12 @@ namespace Banking_Application
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    // Parameterized query - prevents SQL injection
                     cmd.CommandText = @"INSERT INTO Bank_Accounts VALUES(
                         @no, @name, @a1, @a2, @a3, @town, @bal, @type, @od, @rate)";
 
-                    // Encrypt PII before storing
                     cmd.Parameters.AddWithValue("@no", acct.AccountNo);
                     cmd.Parameters.AddWithValue("@name", _crypto.Encrypt(acct.Name));
-                    cmd.Parameters.AddWithValue("@a1", _crypto.Encrypt(acct.AddressLine1 ?? ""));
+                    cmd.Parameters.AddWithValue("@a1", _crypto.Encrypt(acct.AddressLine1));
                     cmd.Parameters.AddWithValue("@a2", _crypto.Encrypt(acct.AddressLine2 ?? ""));
                     cmd.Parameters.AddWithValue("@a3", _crypto.Encrypt(acct.AddressLine3 ?? ""));
                     cmd.Parameters.AddWithValue("@town", _crypto.Encrypt(acct.Town));
@@ -148,7 +142,6 @@ namespace Banking_Application
                 }
             }
 
-            // Log transaction
             AuditLogger.LogTransaction(AuthenticateService.Instance.CurrentUser,
                 acct.AccountNo, acct.Name, "Account Creation", acct.Balance);
 
@@ -157,7 +150,6 @@ namespace Banking_Application
 
         public Bank_Account FindAccount(string accountNo)
         {
-            // Validate GUID format - prevents injection
             if (!SqlInputValidator.IsValidGuid(accountNo)) return null;
 
             var acct = _accounts.FirstOrDefault(a => a.AccountNo.Equals(accountNo,
@@ -179,8 +171,7 @@ namespace Banking_Application
 
             if (acct == null) return false;
 
-            // Administrator approval required
-            if (!AuthenticateService.Instance.RequestAdminApproval($"Close account {accountNo}"))
+            if (!AuthenticateService.Instance.RequestAdminApproval($"Close {accountNo}"))
                 return false;
 
             _accounts.Remove(acct);
@@ -190,7 +181,6 @@ namespace Banking_Application
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    // Parameterized query
                     cmd.CommandText = "DELETE FROM Bank_Accounts WHERE accountNo = @no";
                     cmd.Parameters.AddWithValue("@no", accountNo);
                     cmd.ExecuteNonQuery();
@@ -217,7 +207,6 @@ namespace Banking_Application
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    // Parameterized query
                     cmd.CommandText = "UPDATE Bank_Accounts SET balance = @bal WHERE accountNo = @no";
                     cmd.Parameters.AddWithValue("@bal", acct.Balance);
                     cmd.Parameters.AddWithValue("@no", accountNo);
@@ -243,7 +232,6 @@ namespace Banking_Application
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    // Parameterized query
                     cmd.CommandText = "UPDATE Bank_Accounts SET balance = @bal WHERE accountNo = @no";
                     cmd.Parameters.AddWithValue("@bal", acct.Balance);
                     cmd.Parameters.AddWithValue("@no", accountNo);

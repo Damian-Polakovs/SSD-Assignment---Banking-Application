@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSD_Assignment___Banking_Application;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,49 +7,28 @@ using System.Threading.Tasks;
 
 namespace Banking_Application
 {
-    public class Current_Account: Bank_Account
+    public class Current_Account : Bank_Account
     {
+        public double OverdraftAmount { get; set; }
 
-        public double overdraftAmount;
+        public Current_Account() : base() { }
 
-        public Current_Account(): base()
+        public Current_Account(string name, string a1, string a2, string a3, string town, double bal, double od)
+            : base(name, a1, a2, a3, town, bal)
         {
-
-        }
-        
-        public Current_Account(String name, String address_line_1, String address_line_2, String address_line_3, String town, double balance, double overdraftAmount) : base(name, address_line_1, address_line_2, address_line_3, town, balance)
-        {
-            this.overdraftAmount = overdraftAmount;
+            OverdraftAmount = od;
         }
 
-        public override bool withdraw(double amountToWithdraw)
+        public override bool Withdraw(double amt)
         {
-            double avFunds = getAvailableFunds();
-
-            if (avFunds >= amountToWithdraw)
-            {
-                balance -= amountToWithdraw;
-                return true;
-            }
-
-            else
-                return false;
-
+            if (amt < 0 || GetAvailableFunds() < amt) return false;
+            Balance -= amt;
+            return true;
         }
 
-        public override double getAvailableFunds()
-        {
-            return (base.balance + overdraftAmount);
-        }
+        public override double GetAvailableFunds() => Balance + OverdraftAmount;
 
-        public override String ToString()
-        {
-
-            return base.ToString() +
-                "Account Type: Current Account\n" +
-                "Overdraft Amount: " + overdraftAmount + "\n";
-
-        }
-
+        public override string ToString() => base.ToString() +
+            $"Type: Current Account\nOverdraft: €{OverdraftAmount:N2}\nAvailable Funds: €{GetAvailableFunds():N2}\n";
     }
 }

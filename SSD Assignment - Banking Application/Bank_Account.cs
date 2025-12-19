@@ -8,54 +8,40 @@ namespace Banking_Application
 {
     public abstract class Bank_Account
     {
+        public string AccountNo { get; set; }
+        public string Name { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string AddressLine3 { get; set; }
+        public string Town { get; set; }
+        public double Balance { get; set; }
 
-        public String accountNo;
-        public String name;
-        public String address_line_1;
-        public String address_line_2;
-        public String address_line_3;
-        public String town;
-        public double balance;
+        protected Bank_Account() { }
 
-        public Bank_Account()
+        protected Bank_Account(string name, string addr1, string addr2, string addr3, string town, double balance)
         {
-
-        }
-        
-        public Bank_Account(String name, String address_line_1, String address_line_2, String address_line_3, String town, double balance)
-        {
-            this.accountNo = System.Guid.NewGuid().ToString();
-            this.name = name;
-            this.address_line_1 = address_line_1;
-            this.address_line_2 = address_line_2;
-            this.address_line_3 = address_line_3;
-            this.town = town;
-            this.balance = balance;
+            AccountNo = Guid.NewGuid().ToString();
+            Name = name;
+            AddressLine1 = addr1;
+            AddressLine2 = addr2;
+            AddressLine3 = addr3;
+            Town = town;
+            Balance = balance;
         }
 
-        public void lodge(double amountIn)
+        public void Lodge(double amount)
         {
-
-            balance += amountIn;
-
+            if (amount < 0) throw new ArgumentException("Negative amount not allowed");
+            Balance += amount;
         }
 
-        public abstract bool withdraw(double amountToWithdraw);
+        public abstract bool Withdraw(double amount);
+        public abstract double GetAvailableFunds();
 
-        public abstract double getAvailableFunds();
-
-        public override String ToString()
+        public override string ToString()
         {
-
-            return "\nAccount No: " + accountNo + "\n" +
-            "Name: " + name + "\n" +
-            "Address Line 1: " + address_line_1 + "\n" +
-            "Address Line 2: " + address_line_2 + "\n" +
-            "Address Line 3: " + address_line_3 + "\n" +
-            "Town: " + town + "\n" +
-            "Balance: " + balance + "\n";
-
-    }
-
+            return $"\nAccount: {AccountNo}\nName: {Name}\nAddress: {AddressLine1}\n" +
+                   $"{AddressLine2}\n{AddressLine3}\nTown: {Town}\nBalance: €{Balance:N2}\n";
+        }
     }
 }

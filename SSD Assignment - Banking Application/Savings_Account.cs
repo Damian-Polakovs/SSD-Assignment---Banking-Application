@@ -9,45 +9,26 @@ namespace Banking_Application
     public class Savings_Account: Bank_Account
     {
 
-        public double interestRate;
+        public double InterestRate { get; set; }
 
-       public Savings_Account(): base()
-        {
+        public Savings_Account() : base() { }
 
-        }
-        
-        public Savings_Account(String name, String address_line_1, String address_line_2, String address_line_3, String town, double balance, double interestRate) : base(name, address_line_1, address_line_2, address_line_3, town, balance)
+        public Savings_Account(string name, string a1, string a2, string a3, string town, double bal, double rate)
+            : base(name, a1, a2, a3, town, bal)
         {
-            this.interestRate = interestRate;
-        }
-        public override double getAvailableFunds()
-        {
-            return base.balance;
+            InterestRate = rate;
         }
 
-        public override bool withdraw(double amountToWithdraw)
+        public override bool Withdraw(double amt)
         {
-            double avFunds = getAvailableFunds();
-
-            if (avFunds >= amountToWithdraw)
-            {
-                balance -= amountToWithdraw;
-                return true;
-            }
-
-            else
-                return false;
+            if (amt < 0 || Balance < amt) return false;
+            Balance -= amt;
+            return true;
         }
 
-        public override String ToString()
-        {
+        public override double GetAvailableFunds() => Balance;
 
-            return base.ToString() + 
-                "Account Type: Savings Account\n" +
-                "Interest Rate: " + interestRate + "\n";
-
-        }
-
-
+        public override string ToString() => base.ToString() +
+            $"Type: Savings Account\nInterest Rate: {InterestRate:N2}%\n";
     }
 }
